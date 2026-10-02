@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comercio Exterior</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05080f;
+    --ink:#f4f6fb;
+    --ink-2:#c3cad8;
+    --ink-3:#8b95a8;
+    --amber:#f5a524;
+    --teal:#2dd4bf;
+    --rose:#fb7185;
+    --glass:rgba(10,16,30,.55);
+    --line:rgba(255,255,255,.14);
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);overflow:hidden}
+
+  /* ---------- Fondos de vídeo (pantalla completa) ---------- */
+  .bg{position:fixed;inset:0;opacity:0;transition:opacity 1s ease;pointer-events:none;overflow:hidden}
+  .bg.on{opacity:1}
+  .bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 14s linear}
+  .bg.on video{transform:scale(1)}
+  .bg::after{content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 20% 50%,rgba(5,8,15,.55),rgba(5,8,15,.85) 70%),
+      linear-gradient(180deg,rgba(5,8,15,.35),rgba(5,8,15,.75));}
+  /* Fondo de respaldo si el vídeo no carga */
+  .bg.novideo{background:linear-gradient(120deg,#16386b,#0d5257,#6b4310,#16386b);background-size:400% 400%;animation:drift 18s ease infinite}
+  .bg.novideo video{display:none}
+  @keyframes drift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+  /* ---------- Escenario 16:9 escalado ---------- */
+  #stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+  .slide{position:absolute;inset:0;padding:110px 140px;display:flex;flex-direction:column;justify-content:center;
+    opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s}
+  .slide.on{opacity:1;visibility:visible}
+
+  /* animación de entrada escalonada */
+  .slide .a{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  .slide.on .a{opacity:1;transform:none}
+  .slide.on .a:nth-child(1){transition-delay:.15s}
+  .slide.on .a:nth-child(2){transition-delay:.3s}
+  .slide.on .a:nth-child(3){transition-delay:.45s}
+  .slide.on .a:nth-child(4){transition-delay:.6s}
+  .slide.on .a:nth-child(5){transition-delay:.75s}
+  .slide.on .a:nth-child(6){transition-delay:.9s}
+
+  .kicker{font-family:var(--display);font-weight:600;font-size:26px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;display:flex;align-items:center;gap:18px}
+  .kicker::before{content:"";width:56px;height:3px;background:var(--amber);border-radius:2px}
+  h1{font-family:var(--display);font-weight:700;font-size:118px;line-height:1.0;letter-spacing:-.02em}
+  h2{font-family:var(--display);font-weight:700;font-size:76px;line-height:1.05;letter-spacing:-.015em;max-width:1500px}
+  .lead{font-size:34px;line-height:1.45;color:var(--ink-2);max-width:1250px;margin-top:30px}
+  .hl{color:var(--amber)}
+  .hl2{color:var(--teal)}
+
+  .grid{display:grid;gap:30px;margin-top:56px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:22px;padding:38px 38px}
+  .card h3{font-family:var(--display);font-size:36px;font-weight:600;margin-bottom:14px}
+  .card p,.card li{font-size:26px;line-height:1.45;color:var(--ink-2)}
+  .card ul{list-style:none}
+  .card li{padding-left:30px;position:relative;margin:8px 0}
+  .card li::before{content:"";position:absolute;left:0;top:15px;width:12px;height:12px;border-radius:50%;background:var(--teal)}
+  .card.warn li::before{background:var(--rose)}
+  .num{font-family:var(--display);font-size:22px;font-weight:700;color:var(--bg);background:var(--amber);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin-bottom:22px}
+  .tag{display:inline-block;font-size:20px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);margin-bottom:18px}
+  .note{margin-top:44px;font-size:28px;color:var(--ink-2);border-left:4px solid var(--teal);padding:6px 0 6px 26px;max-width:1500px}
+
+  /* Portada */
+  .cover h1{font-size:150px;max-width:1500px}
+  .cover .meta{margin-top:60px;display:flex;gap:16px;flex-wrap:wrap}
+  .pill{font-size:24px;padding:12px 24px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px)}
+
+  /* Ruta / agenda */
+  .route{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:80px;position:relative}
+  .route::before{content:"";position:absolute;left:5%;right:5%;top:40px;height:3px;background:linear-gradient(90deg,var(--amber),var(--teal))}
+  .stop{text-align:center;padding:0 24px;position:relative}
+  .stop .dot{width:82px;height:82px;border-radius:50%;margin:0 auto 28px;background:var(--bg);border:3px solid var(--amber);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:32px}
+  .stop:nth-child(n+3) .dot{border-color:var(--teal)}
+  .stop h3{font-family:var(--display);font-size:38px;margin-bottom:12px}
+  .stop p{font-size:25px;color:var(--ink-2);line-height:1.4}
+
+  /* Flujo cotización → orden */
+  .flow{display:grid;grid-template-columns:1fr 120px 1fr;align-items:stretch;margin-top:56px}
+  .arrow{display:grid;place-items:center;font-size:72px;color:var(--amber);font-family:var(--display)}
+
+  /* Escala de Incoterms */
+  .scale{margin-top:64px}
+  .scale-bar{display:flex;justify-content:space-between;font-size:24px;color:var(--ink-3);margin-bottom:16px;letter-spacing:.06em;text-transform:uppercase}
+  .terms{display:grid;grid-template-columns:repeat(11,1fr);gap:12px}
+  .term{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:22px 6px;text-align:center;backdrop-filter:blur(10px)}
+  .term b{display:block;font-family:var(--display);font-size:38px;font-weight:700}
+  .term span{font-size:17px;color:var(--ink-3)}
+  .term.sea{border-color:var(--teal);background:rgba(45,212,191,.14)}
+  .term.sea b{color:var(--teal)}
+  .groups{display:grid;grid-template-columns:1fr 3fr 4fr 3fr;gap:12px;margin-top:16px}
+  .groups div{font-size:20px;text-align:center;color:var(--ink-3);border-top:2px solid var(--line);padding-top:10px}
+  .legend{display:flex;gap:40px;margin-top:40px;font-size:26px;color:var(--ink-2)}
+  .legend i{display:inline-block;width:22px;height:22px;border-radius:6px;vertical-align:-3px;margin-right:12px}
+
+  /* FOB vs CIF */
+  .lane{margin-top:56px}
+  .stations{display:grid;grid-template-columns:200px repeat(4,1fr);font-size:24px;color:var(--ink-3);text-align:center;margin-bottom:18px}
+  .stations div:first-child{text-align:left}
+  .row{display:grid;grid-template-columns:200px 1fr;align-items:center;margin:22px 0}
+  .row .lbl{font-family:var(--display);font-size:46px;font-weight:700}
+  .bars{position:relative;height:96px;background:rgba(255,255,255,.06);border-radius:14px;border:1px solid var(--line)}
+  .bar{position:absolute;left:0;height:40px;border-radius:10px;display:flex;align-items:center;padding-left:18px;font-size:21px;font-weight:600;color:var(--bg);white-space:nowrap;
+    width:0;transition:width 1.2s cubic-bezier(.2,.7,.2,1) .6s}
+  .bar.cost{top:6px;background:var(--amber)}
+  .bar.risk{bottom:6px;background:var(--rose)}
+  .slide.on .bar{width:var(--w)}
+  .key{display:flex;gap:40px;font-size:24px;color:var(--ink-2);margin-top:8px}
+  .key i{display:inline-block;width:22px;height:22px;border-radius:6px;vertical-align:-3px;margin-right:12px}
+
+  /* Pasos de importación */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:56px}
+  .types{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px;align-items:center}
+  .types .t{font-size:24px;padding:10px 22px;border-radius:999px;border:1px solid var(--teal);color:var(--teal);background:rgba(45,212,191,.08)}
+  .types .lab{font-size:24px;color:var(--ink-3);margin-right:8px}
+
+  /* Organismos */
+  .orgs .card h3{font-size:32px}
+  .orgs .card li{font-size:24px}
+
+  /* Cierre */
+  .closing .grid .card{border-top:4px solid var(--amber)}
+  .closing .card:nth-child(2){border-top-color:var(--teal)}
+  .closing .card:nth-child(3){border-top-color:var(--rose)}
+  .final{margin-top:60px;font-family:var(--display);font-size:44px;font-weight:600}
+
+  /* ---------- Interfaz del presentador ---------- */
+  .hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:14px 18px;z-index:10;
+    opacity:.0;transition:opacity .3s}
+  body:hover .hud,.hud:focus-within,body.show-hud .hud{opacity:1}
+  .hud button{font:600 15px var(--body);color:var(--ink);background:rgba(10,16,30,.7);border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;backdrop-filter:blur(8px)}
+  .hud button:hover{border-color:var(--amber)}
+  .hud .sp{flex:1}
+  .hud .info{font:500 15px var(--body);color:var(--ink-2);background:rgba(10,16,30,.7);padding:9px 14px;border-radius:10px;border:1px solid var(--line)}
+  #progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--amber),var(--teal));z-index:11;transition:width .5s ease}
+  #notes{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);width:min(900px,calc(100% - 32px));background:rgba(5,8,15,.92);border:1px solid var(--line);border-radius:14px;
+    padding:18px 22px;font-size:17px;line-height:1.55;color:var(--ink-2);z-index:12;display:none}
+  #notes.open{display:block}
+  #notes b{color:var(--amber)}
+  .credit{position:fixed;right:18px;top:14px;font-size:12px;color:rgba(255,255,255,.35);z-index:9}
+
+  @media (prefers-reduced-motion: reduce){
+    .slide .a,.bar,.bg video{transition:none!important}
+    .bg.novideo{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="bgs"></div>
+<div class="credit">Vídeos: Mixkit</div>
+
+<main id="stage">
+
+  <!-- 1 · PORTADA -->
+  <section class="slide cover" data-video="30125" data-notes="Presentar el hilo conductor: vamos a seguir una operación internacional desde que se negocia hasta que la mercancía cruza la aduana. Unos 10 minutos.">
+    <div class="kicker a">Comercio Exterior</div>
+    <h1 class="a">De la negociación<br>al <span class="hl">despacho</span></h1>
+    <p class="lead a">Contrato, Incoterms®, importación, exportación y los actores que lo regulan.</p>
+    <div class="meta a">
+      <span class="pill">Semana 3 + Semana 24 sept.</span>
+      <span class="pill">≈ 10 min</span>
+    </div>
+  </section>
+
+  <!-- 2 · RUTA -->
+  <section class="slide" data-video="34314" data-notes="Cuatro paradas, en el mismo orden en que ocurre una operación real: primero se acuerda, luego se reparten costes y riesgos, después se mueve la mercancía y, por encima de todo, están los organismos que regulan.">
+    <div class="kicker a">La ruta de hoy</div>
+    <h2 class="a">Una operación internacional en <span class="hl">4 paradas</span></h2>
+    <div class="route a">
+      <div class="stop"><div class="dot">1</div><h3>Acordar</h3><p>Contrato, cotización y orden de compra</p></div>
+      <div class="stop"><div class="dot">2</div><h3>Repartir</h3><p>Incoterms® 2020: costes y riesgos</p></div>
+      <div class="stop"><div class="dot">3</div><h3>Mover</h3><p>Importar, exportar y documentar</p></div>
+      <div class="stop"><div class="dot">4</div><h3>Regular</h3><p>Organismos e intermediarios</p></div>
+    </div>
+  </section>
+
+  <!-- 3 · CONTRATO -->
+  <section class="slide" data-video="24047" data-notes="<b>Definición:</b> acuerdo legal vinculante entre un vendedor (exportador) y un comprador (importador) de países distintos. Regula la entrega, el pago, la transferencia de riesgos y las responsabilidades de cada parte. <b>Clave:</b> debe fijar la ley aplicable y cómo se resuelven las disputas, porque intervienen jurisdicciones diferentes.">
+    <div class="kicker a">1 · Acordar</div>
+    <h2 class="a">El contrato de compraventa internacional</h2>
+    <p class="lead a">Acuerdo <span class="hl">legalmente vinculante</span> entre un exportador y un importador de países distintos. Regula la entrega, el pago, los riesgos y las responsabilidades.</p>
+    <div class="grid g3 a">
+      <div class="card"><h3>Documento legal</h3><p>Fija los derechos y las obligaciones de cada parte.</p></div>
+      <div class="card"><h3>Seguridad jurídica</h3><p>Da garantías y vías de solución ante una disputa.</p></div>
+      <div class="card"><h3>Adaptabilidad</h3><p>Define la ley aplicable cuando chocan jurisdicciones.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 · COTIZACIÓN → ORDEN -->
+  <section class="slide" data-video="23115" data-notes="La cotización es la oferta formal del vendedor y <b>es vinculante cuando se acepta</b>, así que debe ser precisa. La orden de compra es la aceptación formal del comprador: compromete a las dos partes y sirve de base para el contrato definitivo.">
+    <div class="kicker a">1 · Acordar</div>
+    <h2 class="a">Cotización <span class="hl">→</span> Orden de compra</h2>
+    <div class="flow a">
+      <div class="card">
+        <span class="tag">Vendedor ofrece</span>
+        <h3>Cotización</h3>
+        <ul>
+          <li>Producto, precio y moneda</li>
+          <li>Plazo de entrega y validez</li>
+          <li>Pago, garantías e <b class="hl">Incoterm</b></li>
+          <li>Embalaje, certificados, fuerza mayor</li>
+        </ul>
+      </div>
+      <div class="arrow">→</div>
+      <div class="card">
+        <span class="tag">Comprador acepta</span>
+        <h3>Orden de compra</h3>
+        <ul>
+          <li>Acepta formalmente la oferta</li>
+          <li>Especificaciones y cantidades exactas</li>
+          <li>Fechas de entrega precisas</li>
+          <li><b class="hl2">Vincula a ambas partes</b></li>
+        </ul>
+      </div>
+    </div>
+    <p class="note a">Una cotización aceptada ya obliga: un error en ella sale caro.</p>
+  </section>
+
+  <!-- 5 · INCOTERMS -->
+  <section class="slide" data-video="17210" data-notes="Los Incoterms los publica la <b>Cámara de Comercio Internacional (CCI)</b>. La versión vigente, 2020, está en vigor desde el 1 de enero de 2020. Hay 11 reglas: 7 para cualquier medio de transporte y 4 solo para transporte marítimo y fluvial (FAS, FOB, CFR, CIF). De izquierda a derecha crece la obligación del vendedor: con EXW entrega en su almacén; con DDP entrega en destino con los aranceles pagados. Se citan así: «FOB Valencia Incoterms® 2020».">
+    <div class="kicker a">2 · Repartir</div>
+    <h2 class="a">Incoterms® 2020: <span class="hl">11 reglas</span>, un idioma común</h2>
+    <p class="lead a">Reglas de la CCI que fijan <b>quién paga</b>, <b>quién asume el riesgo</b> y <b>dónde se entrega</b> la mercancía.</p>
+    <div class="scale a">
+      <div class="scale-bar"><span>← Mínima obligación del vendedor</span><span>Máxima →</span></div>
+      <div class="terms">
+        <div class="term"><b>EXW</b><span>Ex Works</span></div>
+        <div class="term"><b>FCA</b><span>Free Carrier</span></div>
+        <div class="term sea"><b>FAS</b><span>Free Alongside</span></div>
+        <div class="term sea"><b>FOB</b><span>Free On Board</span></div>
+        <div class="term sea"><b>CFR</b><span>Cost &amp; Freight</span></div>
+        <div class="term sea"><b>CIF</b><span>Cost, Ins. &amp; Freight</span></div>
+        <div class="term"><b>CPT</b><span>Carriage Paid</span></div>
+        <div class="term"><b>CIP</b><span>Carr. &amp; Ins. Paid</span></div>
+        <div class="term"><b>DAP</b><span>At Place</span></div>
+        <div class="term"><b>DPU</b><span>Place Unloaded</span></div>
+        <div class="term"><b>DDP</b><span>Duty Paid</span></div>
+      </div>
+      <div class="groups"><div>E · origen</div><div>F · transporte principal sin pagar</div><div>C · transporte principal pagado</div><div>D · entrega en destino</div></div>
+    </div>
+    <div class="legend a">
+      <span><i style="background:rgba(255,255,255,.18);border:1px solid var(--line)"></i>Cualquier transporte (7)</span>
+      <span><i style="background:var(--teal)"></i>Solo marítimo y fluvial (4)</span>
+    </div>
+  </section>
+
+  <!-- 6 · FOB vs CIF -->
+  <section class="slide" data-video="39462" data-notes="El error típico es pensar que quien paga el flete también asume el riesgo. <b>Con FOB</b>, el vendedor paga y arriesga hasta que la mercancía está a bordo en el puerto de origen. <b>Con CIF</b>, el vendedor paga el flete y el seguro hasta el puerto de destino, <b>pero el riesgo pasa al comprador en origen</b>, cuando la mercancía está a bordo. Ejemplo: «CIF Hong Kong Incoterms® 2020».">
+    <div class="kicker a">2 · Repartir</div>
+    <h2 class="a">FOB vs CIF: pagar <span class="hl">no es</span> arriesgar</h2>
+    <div class="lane a">
+      <div class="stations"><div></div><div>Almacén vendedor</div><div>A bordo · origen</div><div>Puerto destino</div><div>Comprador</div></div>
+      <div class="row"><div class="lbl">FOB</div>
+        <div class="bars">
+          <div class="bar cost" style="--w:40%">Costes del vendedor</div>
+          <div class="bar risk" style="--w:40%">Riesgo del vendedor</div>
+        </div>
+      </div>
+      <div class="row"><div class="lbl hl2">CIF</div>
+        <div class="bars">
+          <div class="bar cost" style="--w:65%">Costes del vendedor + flete + seguro</div>
+          <div class="bar risk" style="--w:40%">Riesgo del vendedor</div>
+        </div>
+      </div>
+      <div class="key"><span><i style="background:var(--amber)"></i>Hasta dónde paga el vendedor</span><span><i style="background:var(--rose)"></i>Hasta dónde arriesga el vendedor</span></div>
+    </div>
+    <p class="note a">En CIF el vendedor paga hasta el destino, pero <b>el riesgo pasa al comprador en el puerto de origen</b>.</p>
+  </section>
+
+  <!-- 7 · IMPORTAR -->
+  <section class="slide" data-video="28000" data-notes="Importar es introducir en el territorio aduanero nacional mercancías del extranjero, cumpliendo los requisitos legales. Cuatro pasos: investigar el mercado y los proveedores, negociar (precio, Incoterm, pago, plazos), organizar el transporte y el seguro y, por último, el despacho aduanero, donde se pagan aranceles e impuestos y se libera la mercancía.">
+    <div class="kicker a">3 · Mover</div>
+    <h2 class="a">Importar: traer mercancía al <span class="hl">territorio aduanero</span></h2>
+    <div class="steps a">
+      <div class="card"><div class="num">1</div><h3>Investigar</h3><p>Proveedores, precios y normativa del producto.</p></div>
+      <div class="card"><div class="num">2</div><h3>Negociar</h3><p>Precio, cantidades, Incoterm, pago y plazos.</p></div>
+      <div class="card"><div class="num">3</div><h3>Transportar</h3><p>Embarque, seguro y traslado hasta el destino.</p></div>
+      <div class="card"><div class="num">4</div><h3>Despachar</h3><p>Documentos, aranceles e impuestos y liberación.</p></div>
+    </div>
+    <div class="types a">
+      <span class="lab">Tipos:</span>
+      <span class="t">Definitiva</span><span class="t">Temporal</span><span class="t">En consignación</span><span class="t">Muestras sin valor</span><span class="t">Reimportación</span>
+    </div>
+  </section>
+
+  <!-- 8 · DOCUMENTACIÓN -->
+  <section class="slide" data-video="23011" data-notes="Hay dos familias de documentos. Los comerciales describen la venta y la mercancía; los de transporte prueban el envío y el seguro. B/L es el conocimiento de embarque marítimo, AWB la guía aérea y la carta de porte internacional (CMR) se usa en carretera. <b>Un solo error</b> puede provocar retrasos y costes extra en la aduana.">
+    <div class="kicker a">3 · Mover</div>
+    <h2 class="a">Los papeles que mueven la mercancía</h2>
+    <div class="grid g2 a">
+      <div class="card">
+        <span class="tag">Comerciales</span>
+        <ul>
+          <li>Factura comercial</li>
+          <li>Lista de empaque (packing list)</li>
+          <li>Certificado de origen</li>
+          <li>Certificados de calidad</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">Transporte y seguro</span>
+        <ul>
+          <li>Conocimiento de embarque (B/L) · marítimo</li>
+          <li>Guía aérea (AWB) · aéreo</li>
+          <li>Carta de porte internacional · carretera</li>
+          <li>Póliza de seguro internacional</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note a">Un solo error documental significa retrasos y sobrecostes en aduana.</p>
+  </section>
+
+  <!-- 9 · EXPORTAR -->
+  <section class="slide" data-video="41361" data-notes="Exportar es vender en el extranjero lo que se produce en el país: genera divisas y hace crecer a la empresa. Las ventajas compensan los desafíos si hay estrategia: investigar el mercado, adaptar el producto a sus normas y gustos, buscar socios locales y <b>proteger la marca y las patentes antes de exportar</b>.">
+    <div class="kicker a">3 · Mover</div>
+    <h2 class="a">Exportar: llevar la empresa al <span class="hl">mercado global</span></h2>
+    <div class="grid g3 a">
+      <div class="card">
+        <span class="tag">Ventajas</span>
+        <ul><li>Diversificar mercados</li><li>Alargar la vida del producto</li><li>Economías de escala</li><li>Prestigio internacional</li></ul>
+      </div>
+      <div class="card warn">
+        <span class="tag">Desafíos</span>
+        <ul><li>Barreras arancelarias y no arancelarias</li><li>Diferencias culturales e idiomáticas</li><li>Competencia global</li><li>Logística compleja</li></ul>
+      </div>
+      <div class="card">
+        <span class="tag">Estrategia</span>
+        <ul><li>Investigar el mercado</li><li>Adaptar el producto</li><li>Aliarse con socios locales</li><li>Proteger la propiedad intelectual</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · ORGANISMOS E INTERMEDIARIOS -->
+  <section class="slide orgs" data-video="47670" data-notes="<b>Organismos:</b> regulan (normas y aranceles), supervisan (cumplimiento y disputas) y apoyan (financiación y formación). El ICEX ofrece a las empresas españolas programas de iniciación, ferias, misiones comerciales e información de mercados. <b>Intermediarios:</b> el agente comercial vende a comisión, el agente de aduanas gestiona el despacho y el transitario (freight forwarder) organiza y optimiza el transporte. Son clave para las empresas con poca experiencia.">
+    <div class="kicker a">4 · Regular</div>
+    <h2 class="a">Quién <span class="hl">regula</span> y quién <span class="hl2">ayuda</span></h2>
+    <div class="grid g4 a">
+      <div class="card"><span class="tag">Internacionales</span><ul><li>OMC</li><li>Cámara de Comercio Internacional</li><li>Banco Mundial</li></ul></div>
+      <div class="card"><span class="tag">Europeos</span><ul><li>Comisión Europea · DG Comercio</li><li>Banco Europeo de Inversiones</li><li>Eurostat</li></ul></div>
+      <div class="card"><span class="tag">España</span><ul><li>ICEX</li><li>Secretaría de Estado de Comercio</li><li>AEAT · Aduanas</li><li>Cámaras de Comercio</li></ul></div>
+      <div class="card" style="border-color:var(--teal)"><span class="tag" style="border-color:var(--teal);color:var(--teal)">Intermediarios</span><ul><li>Agente comercial</li><li>Agente de aduanas</li><li>Transitario</li></ul></div>
+    </div>
+    <p class="note a">Los organismos <b>regulan, supervisan y apoyan</b>; los intermediarios aportan experiencia y reducen riesgos.</p>
+  </section>
+
+  <!-- 11 · CIERRE -->
+  <section class="slide closing" data-video="45036" data-notes="Cerrar con las tres ideas y volver al hilo del principio: de la negociación al despacho. Abrir el turno de preguntas.">
+    <div class="kicker a">Para llevarse</div>
+    <h2 class="a">Tres claves para operar seguro</h2>
+    <div class="grid g3 a">
+      <div class="card"><h3>Contratos precisos</h3><p>Cotización, orden y contrato claros evitan conflictos.</p></div>
+      <div class="card"><h3>Incoterm correcto</h3><p>Deja claro quién paga, quién arriesga y dónde se entrega.</p></div>
+      <div class="card"><h3>Apoyarse en expertos</h3><p>Organismos e intermediarios reducen riesgos y abren mercados.</p></div>
+    </div>
+    <p class="final a">¿Preguntas? <span class="hl">Gracias.</span></p>
+  </section>
+
+</main>
+
+<div id="notes"></div>
+
+<div class="hud">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <span class="info" id="count">1 / 11</span>
+  <span class="info" id="timer">00:00</span>
+  <span class="sp"></span>
+  <button id="btnNotes">Notas (N)</button>
+  <button id="btnFull">Pantalla completa (F)</button>
+</div>
+
+<script>
+(() => {
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  const bgWrap = document.getElementById('bgs');
+  const notes = document.getElementById('notes');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cur = 0;
+
+  // --- Escalar el escenario 1920×1080 al viewport ---
+  function fit(){
+    const s = Math.min(innerWidth/1920, innerHeight/1080);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  // --- Fondos de vídeo ---
+  // Orden de prueba: vídeo local en videos/NN.mp4 → Mixkit 720p → Mixkit 360p → degradado animado.
+  const bgs = slides.map((sl, i) => {
+    const id = sl.dataset.video;
+    const n = String(i+1).padStart(2,'0');
+    const el = document.createElement('div');
+    el.className = 'bg';
+    const v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+    v.setAttribute('muted',''); v.setAttribute('playsinline','');
+    el.appendChild(v);
+    bgWrap.appendChild(el);
+    const srcs = [
+      `videos/${n}.mp4`,
+      `https://assets.mixkit.co/videos/${id}/${id}-720.mp4`,
+      `https://assets.mixkit.co/videos/${id}/${id}-360.mp4`,
+    ];
+    let k = -1, loaded = false;
+    function tryNext(){
+      k++;
+      if (k >= srcs.length){ el.classList.add('novideo'); return; }
+      v.src = srcs[k]; v.load();
+    }
+    v.addEventListener('error', tryNext);
+    return {
+      el, v,
+      load(){ if (!loaded){ loaded = true; v.preload = 'auto'; tryNext(); } },
+      play(){ this.load(); if (!reduceMotion) v.play().catch(()=>{}); },
+      pause(){ v.pause(); }
+    };
+  });
+
+  function go(i){
+    i = Math.max(0, Math.min(slides.length-1, i));
+    slides[cur].classList.remove('on'); bgs[cur].el.classList.remove('on'); bgs[cur].pause();
+    cur = i;
+    slides[cur].classList.add('on'); bgs[cur].el.classList.add('on'); bgs[cur].play();
+    if (bgs[cur+1]) bgs[cur+1].load(); // precarga la siguiente
+    document.getElementById('count').textContent = `${cur+1} / ${slides.length}`;
+    document.getElementById('progress').style.width = `${(cur+1)/slides.length*100}%`;
+    notes.innerHTML = `<b>Notas · ${cur+1}</b><br>${slides[cur].dataset.notes || ''}`;
+    history.replaceState(null, '', '#' + (cur+1));
+  }
+
+  // --- Navegación ---
+  const next = () => go(cur+1), prev = () => go(cur-1);
+  const toggleNotes = () => notes.classList.toggle('open');
+  const toggleFull = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(()=>{});
+  addEventListener('keydown', e => {
+    if (['ArrowRight','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length-1);
+    else if (e.key.toLowerCase() === 'n') toggleNotes();
+    else if (e.key.toLowerCase() === 'f') toggleFull();
+  });
+  document.getElementById('next').onclick = next;
+  document.getElementById('prev').onclick = prev;
+  document.getElementById('btnNotes').onclick = toggleNotes;
+  document.getElementById('btnFull').onclick = toggleFull;
+
+  let tx = null;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; document.body.classList.add('show-hud'); }, {passive:true});
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+    tx = null;
+  });
+
+  // --- Cronómetro (objetivo ≈ 10 min) ---
+  const t0 = Date.now(), timer = document.getElementById('timer');
+  setInterval(() => {
+    const s = Math.floor((Date.now()-t0)/1000);
+    timer.textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    timer.style.color = s > 600 ? 'var(--rose)' : '';
+  }, 1000);
+
+  go((parseInt(location.hash.slice(1)) || 1) - 1);
+})();
+</script>
+</body>
+</html>
