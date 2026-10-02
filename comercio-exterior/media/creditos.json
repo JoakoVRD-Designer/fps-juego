@@ -24,5 +24,29 @@
   },
   "cierre": {
     "fondo": "https://www.pexels.com/video/38594546/"
+  },
+  "quees": {
+    "foto": "https://www.pexels.com/video/7735915/"
+  },
+  "cerezas": {
+    "fondo": "https://www.pexels.com/video/29676917/"
+  },
+  "escala": {
+    "fondo": "https://www.pexels.com/video/8633309/",
+    "foto": "https://www.pexels.com/video/5532878/"
+  },
+  "desafios": {
+    "fondo": "https://www.pexels.com/video/16223922/"
+  },
+  "barreras": {
+    "fondo": "https://www.pexels.com/video/38736675/"
+  },
+  "cultura": {
+    "fondo": "https://www.pexels.com/video/30870676/",
+    "foto": "https://www.pexels.com/video/10472331/"
+  },
+  "estrategias": {
+    "fondo": "https://www.pexels.com/video/7552433/",
+    "foto": "https://www.pexels.com/video/8170593/"
   }
 }
