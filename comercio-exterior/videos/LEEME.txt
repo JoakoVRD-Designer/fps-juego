@@ -1,1 +1,1 @@
-Pon aquí 01.mp4 … 11.mp4 para usar vídeos locales (opcional).
+Vídeos locales opcionales: NNNNN.mp4 (número de Mixkit) para la versión web; 01.mp4 … 11.mp4 para la de diapositivas.
