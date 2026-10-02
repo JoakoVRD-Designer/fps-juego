@@ -48,5 +48,12 @@
   "estrategias": {
     "fondo": "https://www.pexels.com/video/7552433/",
     "foto": "https://www.pexels.com/video/8170593/"
+  },
+  "importacion": {
+    "fondo": "https://www.pexels.com/video/10496570/",
+    "foto": "https://www.pexels.com/video/10039769/"
+  },
+  "documentos-pesca": {
+    "fondo": "https://www.pexels.com/video/17067018/"
   }
 }
