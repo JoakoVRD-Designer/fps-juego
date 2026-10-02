@@ -1,0 +1,13 @@
+{
+  "portada":    { "fondo": "container port aerial" },
+  "caso":       { "fondo": "cargo ship ocean aerial", "foto": "cherries" },
+  "contrato":   { "fondo": "business meeting office", "foto": "business handshake" },
+  "cotizacion": { "fondo": "signing documents" },
+  "incoterms":  { "fondo": "container ship sea" },
+  "fobcif":     { "fondo": "container crane port" },
+  "importar":   { "fondo": "cargo airplane", "foto": "shipping containers" },
+  "documentos": { "fondo": "warehouse logistics", "foto": "forklift warehouse" },
+  "exportar":   { "fondo": "trucks highway aerial" },
+  "organismos": { "fondo": "city skyline night" },
+  "cierre":     { "fondo": "earth from space" }
+}

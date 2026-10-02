@@ -1,0 +1,30 @@
+# Busca y baja de Pexels los clips de la presentación de Comercio Exterior (tools/comex-videos.json)
+# y los guarda en comercio-exterior/media/ de esta misma rama.
+name: Bajar videos de Comercio Exterior
+on:
+  push:
+    branches: [claude/keen-lovelace-3jig17]
+    paths: [tools/comex-videos.json, tools/comex-videos.mjs, .github/workflows/comex-videos.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  bajar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: npm i --no-save playwright@1 && npx playwright install --with-deps chromium
+      - run: node tools/comex-videos.mjs
+      - name: Guardar los clips en la rama
+        if: always()
+        run: |
+          ls -la comercio-exterior/media || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add comercio-exterior/media
+          git commit -qm "Videos de Pexels para la presentación de Comercio Exterior" || exit 0
+          git pull --rebase -q origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
