@@ -1,0 +1,28 @@
+{
+  "portada": {
+    "fondo": "https://www.pexels.com/video/10391545/"
+  },
+  "caso": {
+    "fondo": "https://www.pexels.com/video/20438712/",
+    "foto": "https://www.pexels.com/video/14078813/"
+  },
+  "cotizacion": {
+    "fondo": "https://www.pexels.com/video/8439245/"
+  },
+  "incoterms": {
+    "fondo": "https://www.pexels.com/video/38288270/"
+  },
+  "importar": {
+    "fondo": "https://www.pexels.com/video/5696874/",
+    "foto": "https://www.pexels.com/video/36233044/"
+  },
+  "exportar": {
+    "fondo": "https://www.pexels.com/video/7183495/"
+  },
+  "organismos": {
+    "fondo": "https://www.pexels.com/video/34398886/"
+  },
+  "cierre": {
+    "fondo": "https://www.pexels.com/video/38594546/"
+  }
+}
