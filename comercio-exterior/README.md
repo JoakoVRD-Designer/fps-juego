@@ -1,27 +1,38 @@
 # Presentación: Comercio Exterior — De la negociación al despacho
 
-Presentación HTML de unos **10 minutos** (11 diapositivas), con un **vídeo de fondo en cada diapositiva**.
+Dos versiones de la misma presentación (unos **10 minutos**), con **vídeo de fondo** en cada pantalla:
+
+- **`index.html` · versión web**: secciones a pantalla completa con desplazamiento, vídeo de fondo y vídeo recuadrado, menú de capítulos. Es la que se publica en GitHub Pages.
+- **`diapositivas.html` · versión diapositivas**: 11 diapositivas 16:9 clásicas.
 Resume y reordena *COMERCIO_EXTERIOR_SEMANA_3* y *COMERCIO_EXTERIOR_SEMANA_24_sept*.
 El plan, las reglas y los tiempos están en [`PLANIFICACION.md`](PLANIFICACION.md).
 
+## Publicarla con GitHub Pages (una sola vez)
+1. En GitHub, abre el repositorio → **Settings** → **Pages**.
+2. En **Build and deployment**, elige **Source: Deploy from a branch**.
+3. Elige la rama `claude/keen-lovelace-3jig17` y la carpeta `/ (root)`, y pulsa **Save**.
+4. En 1 o 2 minutos estará en **https://joakovrd-designer.github.io/fps-juego/**.
+
 ## Cómo usarla
-Abre `index.html` en Chrome, Edge o Firefox (necesita internet para los vídeos y las fuentes).
+Abre el enlace de GitHub Pages, o `index.html` en Chrome, Edge o Firefox (necesita internet para los vídeos y las fuentes).
 
 | Tecla | Acción |
 |-------|--------|
-| → / Espacio / Re Pág | Siguiente |
-| ← / Av Pág | Anterior |
+| → / ↓ / Espacio / Av Pág | Siguiente |
+| ← / ↑ / Re Pág | Anterior |
 | F | Pantalla completa |
 | N | Notas del presentador |
 | Inicio / Fin | Primera / última |
 
-En el móvil, desliza a izquierda o derecha. El cronómetro se pone rojo al pasar de 10 minutos.
+En la versión web también se avanza con la rueda del ratón o deslizando el dedo; en la de diapositivas, deslizando a izquierda o derecha. El cronómetro se pone rojo al pasar de 10 minutos.
 
 ## Vídeos de fondo
-Cada diapositiva prueba, por este orden:
-1. Un vídeo local en `videos/NN.mp4` (`01.mp4` … `11.mp4`). Sirve para presentar **sin internet** o para cambiar un vídeo.
+Cada vídeo se prueba por este orden:
+1. Un vídeo local en `videos/`. En la versión web se llama como su número de Mixkit (por ejemplo `videos/30125.mp4`); en la de diapositivas, por posición (`videos/01.mp4` … `videos/11.mp4`). Sirve para presentar **sin internet** o para cambiar un vídeo.
 2. El vídeo de Mixkit (720p y, si no, 360p).
-3. Si nada carga, un degradado animado: la diapositiva nunca se ve rota.
+3. Si nada carga, el fondo pasa a un mapa animado de rutas marítimas y el vídeo recuadrado se oculta: la pantalla nunca se ve rota.
+
+Vídeos de la versión diapositivas (la versión web usa además 9665, 4083, 36293 y 21607):
 
 | # | Vídeo (Mixkit, licencia gratuita) |
 |---|-----------------------------------|
@@ -37,4 +48,4 @@ Cada diapositiva prueba, por este orden:
 | 10 | [Time lapse of beautiful city lights at night](https://mixkit.co/free-stock-video/time-lapse-of-beautiful-city-lights-at-night-47670/) |
 | 11 | [Earth rotating below as seen from Space](https://mixkit.co/free-stock-video/earth-rotating-below-as-seen-from-space-45036/) |
 
-Para cambiar un vídeo, cambia el número de `data-video="…"` de su diapositiva en `index.html`, o pon tu propio `videos/NN.mp4`.
+Para cambiar un vídeo, cambia su número de Mixkit: en `index.html` son los atributos `data-bg="…"` (fondo) y `data-v="…"` (recuadro); en `diapositivas.html`, `data-video="…"`.
