@@ -1,9 +1,4 @@
 {
-  "quees":       { "foto": "dollar bills" },
-  "cerezas":     { "fondo": "cherry orchard" },
-  "escala":      { "fondo": "fruit packing factory", "foto": "quality control inspection" },
-  "desafios":    { "fondo": "ship storm" },
-  "barreras":    { "fondo": "customs inspection" },
-  "cultura":     { "fondo": "chinese new year", "foto": "refrigerated container" },
-  "estrategias": { "fondo": "business meeting", "foto": "business handshake" }
+  "importacion":      { "fondo": "fishing boat sea", "foto": "frozen shrimp" },
+  "documentos-pesca": { "fondo": "fish processing factory" }
 }
