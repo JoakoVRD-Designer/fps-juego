@@ -4,33 +4,569 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Exportaciones — Presentación</title>
-<meta name="description" content="Presentación de Exportaciones: ventajas, desafíos, Incoterms y un caso de importación en la pesca. INSUCO Bicentenario de Excelencia, Chillán.">
-<meta http-equiv="refresh" content="2; url=https://claude.ai/artifact/6gubBjX7oBkEpthcMpiCuT">
+<meta name="description" content="Presentación de Exportaciones: tratados de libre comercio, ventajas, desafíos, Incoterms y un caso de importación en la pesca. INSUCO Bicentenario de Excelencia, Chillán.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: dark; --bg:#0a0a0c; --ink:#ffffff; --ink-2:#d7dade; --ink-3:#9aa0a6; --red:#ff3b4a; }
+  :root { color-scheme: dark; --bg:#0a0a0c; --ink:#ffffff; --ink-2:#d7dade; --ink-3:#9aa0a6; --red:#ff3b4a; --line:#2a2c30; }
   * { box-sizing: border-box; margin: 0; }
-  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: Inter, Arial, sans-serif; }
-  body { display: flex; align-items: center; padding: 24px clamp(16px, 8vw, 128px); }
-  main { max-width: 900px; display: flex; flex-direction: column; gap: 24px; }
-  .kick { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--red); }
-  h1 { font-size: clamp(48px, 10vw, 120px); font-weight: 800; line-height: 1; }
-  p { font-size: clamp(18px, 2.2vw, 24px); line-height: 1.45; color: var(--ink-2); }
-  a.btn { align-self: flex-start; display: inline-block; background: var(--red); color: #0a0a0c; font-weight: 700; font-size: 20px; text-decoration: none; padding: 16px 28px; border-radius: 10px; }
-  a.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-  small { font-size: 15px; color: var(--ink-3); }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
+  body { font-family: Inter, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  #visor { position: fixed; inset: 0; overflow: hidden; }
+  #escenario { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; transform: translate(-50%, -50%); background: var(--bg); overflow: hidden; }
+  .slide { position: absolute !important; top: 0; left: 0; width: 1920px; height: 1080px; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+  .slide.activa { opacity: 1; visibility: visible; transition: opacity .45s ease; z-index: 1; }
+  .slide > * { position: relative; }
+  .slide p, .slide h1, .slide h2 { margin: 0; }
+  .slide video.fondo { background: #0a0a0c; }
+
+  #barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: linear-gradient(0deg, rgba(10,10,12,.85), rgba(10,10,12,0)); opacity: 0; transition: opacity .3s; }
+  body.mostrar #barra, #barra:focus-within { opacity: 1; }
+  #barra button { font: 600 14px 'JetBrains Mono', monospace; color: var(--ink); background: rgba(16,16,19,.9); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; min-height: 40px; }
+  #barra button:hover { border-color: var(--red); }
+  #barra button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  #contador { font: 600 14px 'JetBrains Mono', monospace; color: var(--ink-2); letter-spacing: .08em; min-width: 64px; text-align: center; }
+  #barra .sep { flex: 1; }
+  #progreso { position: fixed; left: 0; top: 0; height: 4px; background: var(--red); z-index: 6; transition: width .4s ease; }
+
+  #notas { position: fixed; right: 16px; top: 16px; bottom: 76px; width: min(520px, calc(100vw - 32px)); z-index: 7; background: rgba(16,16,19,.97); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; overflow: auto; display: none; }
+  #notas.abierta { display: block; }
+  #notas h3 { font: 600 13px 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; }
+  #notas div { font-size: 16px; line-height: 1.55; color: var(--ink-2); white-space: pre-line; }
+
+  #ayuda { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 6; font: 500 13px 'JetBrains Mono', monospace; color: var(--ink-3); background: rgba(16,16,19,.9); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; white-space: nowrap; transition: opacity .6s; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
+  #ayuda.oculta { opacity: 0; pointer-events: none; }
+
+  @media (prefers-reduced-motion: reduce) { .slide, .slide.activa, #progreso { transition: none; } }
 </style>
 </head>
 <body>
-<main>
-  <p class="kick">Comercio Exterior</p>
-  <h1>EXPORTACIONES</h1>
-  <p>Impulsando su empresa al mercado global: ventajas, desafíos, Incoterms y un caso de importación.</p>
-  <a class="btn" href="https://claude.ai/artifact/6gubBjX7oBkEpthcMpiCuT">Ver la presentación</a>
-  <small>Abriendo la presentación… Si no se abre sola, usa el botón. · INSUCO Bicentenario de Excelencia, Chillán · 2026</small>
-</main>
-<script>setTimeout(function () { location.href = "https://claude.ai/artifact/6gubBjX7oBkEpthcMpiCuT"; }, 1500);</script>
+<div id="progreso" style="width:0"></div>
+<div id="visor">
+<div id="escenario" role="region" aria-roledescription="presentación" aria-label="Exportaciones — Presentación">
+<section class="slide" data-n="1" id="portada" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:128px 128px 176px; display:flex; flex-direction:column; justify-content:end; gap:28px">
+<video class="fondo" data-src="comercio-exterior/media/portada.mp4" poster="comercio-exterior/media/portada.jpg" muted loop playsinline preload="none" aria-label="Vista aérea de un puerto de contenedores" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:linear-gradient(90deg, #0a0a0cf2 0%, #0a0a0cd0 45%, #0a0a0c55 100%)"></div>
+<div style="position:absolute; top:96px; left:1172px; width:620px; height:150px; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:40px; background:#f4f5f2; border-radius:16px; padding:16px 32px">
+<img src="comercio-exterior/media/logo-insuco.png" alt="Logo INSUCO" style="width:104px; height:118px; object-fit:contain">
+<img src="comercio-exterior/media/logo-comeduc.png" alt="Logo Comeduc" style="width:260px; height:120px; object-fit:contain">
+</div>
+<h1 style="font-size:168px; font-weight:800; line-height:1; letter-spacing:2px; color:#ffffff">EXPORTACIONES</h1>
+<p style="width:1200px; font-size:44px; line-height:1.3; color:#e9ecee">Impulsando su empresa al mercado global: ventajas, desafíos, Incoterms y un caso de importación.</p>
+<p style="position:absolute; bottom:64px; left:128px; width:1664px; font-size:26px; color:#9aa0a6">INSUCO Bicentenario de Excelencia, Chillán · 2026</p>
+</section>
+<section class="slide" data-n="2" id="tratados" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:22px">
+<video class="fondo" data-src="comercio-exterior/media/cotizacion.mp4" poster="comercio-exterior/media/cotizacion.jpg" muted loop playsinline preload="none" aria-label="Firma de un documento" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:#0a0a0cd8"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Tratados de libre comercio</p>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Cómo mejoró Chile desde 1990.</h2>
+<p style="font-size:26px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px"><b>En simple:</b> un TLC es un acuerdo entre países para cobrarse menos «peaje» (aranceles).</p>
+<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px">
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(70,10,16,0.94); border:2px solid #ff3b4a; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Exportaciones</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">× 12</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">US$ 8.373 millones (1990) → US$ 100.163 millones (2024).</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">PIB por persona</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">× 6,8</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">US$ 2.510 (1990) → US$ 16.990 (2023), en dólares de cada año.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Arancel general</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">15 % → 6 %</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">Bajó a 11 % en 1991 y a 6 % en 2003.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Acuerdos comerciales</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">26</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">vigentes hoy, con países y bloques de todo el mundo.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">TLC con China</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">2006</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">El primero que China firmó con un país. Cerezas con arancel 0 % desde 2008.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:6px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:10px; padding:16px 24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Cerezos plantados</p>
+<p style="font-size:48px; font-weight:800; line-height:1.1; color:#ffffff">× 21</p>
+<p style="font-size:24px; line-height:1.3; color:#d7dade">3.241 hectáreas (2000) → 67.570 hectáreas (2023).</p>
+</div>
+</div>
+<p style="font-size:24px; line-height:1.35; color:#d7dade; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:8px; padding:12px 20px"><b>Hitos:</b> 1996-97 Mercosur y Canadá · 2003 Unión Europea · 2004 EE.UU. y Corea del Sur · 2006 China · 2023 CPTPP</p>
+</section>
+<section class="slide" data-n="3" id="quees" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:28px">
+<video class="fondo" data-src="comercio-exterior/media/cerezas.mp4" poster="comercio-exterior/media/cerezas.jpg" muted loop playsinline preload="none" aria-label="Cerezas colgando de un cerezo" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:linear-gradient(90deg, #0a0a0cf4 0%, #0a0a0cd8 50%, #0a0a0c66 100%)"></div>
+<img src="comercio-exterior/media/quees-foto.jpg" alt="Billetes de dólar sobre documentos" style="position:absolute; top:112px; left:1152px; width:640px; height:400px; object-fit:cover; border-radius:12px">
+<div style="position:absolute; top:532px; left:1152px; width:640px; height:388px; display:flex; flex-direction:column; gap:12px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:12px; padding:28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Tipos de exportación</p>
+<p style="font-size:24px; line-height:1.3; color:#e9ecee"><b>Directa:</b> la empresa le vende sola al cliente extranjero.</p>
+<p style="font-size:24px; line-height:1.3; color:#e9ecee"><b>Indirecta:</b> vende a través de un intermediario, como una exportadora o un agente.</p>
+<p style="font-size:24px; line-height:1.3; color:#e9ecee"><b>En Chile:</b> la salida se declara a Aduanas con el DUS, y lo exportado no paga IVA.</p>
+</div>
+<h2 style="width:960px; font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Vender en otros países lo que se produce en Chile.</h2>
+<div style="width:960px; display:flex; flex-direction:column; gap:18px">
+<div style="display:flex; flex-direction:row; gap:32px; align-items:center">
+<p style="width:300px; font-size:56px; font-weight:700; line-height:1; color:#ff3b4a; white-space:nowrap">Vender</p>
+<p style="width:620px; font-size:28px; line-height:1.35; color:#e9ecee">bienes o servicios nacionales a mercados extranjeros.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:32px; align-items:center">
+<p style="width:300px; font-size:56px; font-weight:700; line-height:1; color:#ff3b4a; white-space:nowrap">Divisas</p>
+<p style="width:620px; font-size:28px; line-height:1.35; color:#e9ecee">entran dólares y otras monedas extranjeras al país.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:32px; align-items:center">
+<p style="width:300px; font-size:56px; font-weight:700; line-height:1; color:#ff3b4a; white-space:nowrap">Economía</p>
+<p style="width:620px; font-size:28px; line-height:1.35; color:#e9ecee">la economía nacional se fortalece.</p>
+</div>
+</div>
+<p style="width:960px; font-size:28px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px"><b>En simple:</b> es como vender las empanadas que haces en casa a un cliente de otro país, que te paga en dólares.</p>
+<div style="width:960px; display:flex; flex-direction:column; gap:8px; background:rgba(70,10,16,0.9); border:2px solid #ff3b4a; border-radius:12px; padding:24px 32px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">El caso que seguiremos</p>
+<p style="font-size:30px; line-height:1.35; color:#ffffff">Chile es el <b>mayor exportador de cerezas frescas del mundo</b>: en 2024-25 envió <b>626.014 toneladas</b> (51 % más que el año anterior), y el <b>91 %</b> fue a China.</p>
+</div>
+</section>
+<section class="slide" data-n="4" id="ventajas" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:24px">
+<video class="fondo" data-src="comercio-exterior/media/exportar.mp4" poster="comercio-exterior/media/exportar.jpg" muted loop playsinline preload="none" aria-label="Carretera entre campos vista desde un dron" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:linear-gradient(180deg, #0a0a0cf0 0%, #0a0a0cd0 45%, #0a0a0ca0 100%)"></div>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Cuatro razones para salir al mundo.</h2>
+<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:24px">
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Diversificación de mercados</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">No poner todos los huevos en la misma canasta: si un país deja de comprar, los demás compensan.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> el 91 % va a China, y en 2025 tanta oferta bajó el precio allá.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Ampliación del ciclo de vida</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Lo que aquí ya es común, afuera puede ser novedad: el producto vive una segunda etapa de ventas.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> las cerezas chilenas llegan en contraestación, cuando el hemisferio norte no tiene.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ff3b4a"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Economías de escala</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Hornear 10 queques en el mismo horno sale más barato por queque que hornear 1: los costos fijos se reparten.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> la cámara de frío y el packing se reparten entre más cajas, y cada caja sale más barata.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ff3b4a"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Prestigio internacional</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Si te compra un cliente exigente, los demás confían en ti: exportar es un sello de calidad.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> cumplir las normas de China abre las puertas de otros mercados.</p>
+</div>
+</div>
+<p style="font-size:24px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px"><b>Dato:</b> en Chile, las exportaciones no pagan IVA y el exportador puede recuperar el IVA de sus compras.<br><b>Escala en números:</b> cámara de frío de $10 millones ÷ 1.000 cajas = $10.000 por caja; ÷ 10.000 cajas = solo $1.000 por caja.</p>
+</section>
+<section class="slide" data-n="5" id="desafios" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:24px">
+<video class="fondo" data-src="comercio-exterior/media/desafios.mp4" poster="comercio-exterior/media/desafios.jpg" muted loop playsinline preload="none" aria-label="Mar agitado con barcos a la distancia" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:linear-gradient(180deg, #0a0a0cf0 0%, #0a0a0cd0 45%, #0a0a0ca0 100%)"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Desafíos comunes</p>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Exportar también tiene obstáculos.</h2>
+<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:24px">
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ffb020"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Barreras arancelarias y no arancelarias</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Arancel: el impuesto por entrar, como un peaje. No arancelarias: normas sanitarias, permisos, cuotas o etiquetado.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> el TLC Chile–China baja el arancel, pero el SAG igual exige certificado fitosanitario.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ffb020"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Diferencias culturales y lingüísticas</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Otro idioma, otras costumbres y otra forma de negociar: lo que aquí es normal, allá puede no gustar.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> en China las cerezas se regalan en el Año Nuevo Chino, y el rojo trae buena suerte.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ffb020"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4a4 4 0 0 1 0 8"/><path d="M22 21a7 7 0 0 0-5-6.7"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Competencia internacional</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">No somos el único puesto de la feria: otros países venden lo mismo y compiten en precio y calidad.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> hay que ganar en calidad y cumplir los plazos para llegar a las fechas clave.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-radius:12px; padding:24px 28px">
+<div style="display:flex; flex-direction:row; gap:18px; align-items:center">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:48px; height:48px; color:#ffb020"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+<h3 style="font-size:34px; font-weight:700; color:#ffffff">Logística compleja</h3>
+</div>
+<p style="font-size:26px; line-height:1.35; color:#d7dade">Llevar fruta fresca al otro lado del mundo sin que se eche a perder: frío, tiempo y coordinación.</p>
+<p style="font-size:24px; line-height:1.35; color:#ff8a8f"><b>En el caso:</b> semanas de viaje en contenedor refrigerado; un atraso significa pérdidas.</p>
+</div>
+</div>
+</section>
+<section class="slide" data-n="6" id="estrategias" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:24px">
+<video class="fondo" data-src="comercio-exterior/media/estrategias.mp4" poster="comercio-exterior/media/estrategias.jpg" muted loop playsinline preload="none" aria-label="Reunión de trabajo en una oficina" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:#0a0a0cd4"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Estrategia y preparación</p>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Cómo exportar con éxito.</h2>
+<div style="display:flex; flex-direction:row; gap:24px; align-items:stretch">
+<div style="flex:1; display:flex; flex-direction:column; gap:12px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:12px; padding:28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Estrategias</p>
+<div style="display:flex; flex-direction:row; gap:16px; align-items:start">
+<p style="width:52px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:30px; font-weight:600; color:#ff3b4a">01</p>
+<p style="flex:1; font-size:26px; line-height:1.35; color:#e9ecee"><b>Investigar el mercado:</b> quién compra, a qué precio, qué competencia hay y en qué fechas se vende más.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:16px; align-items:start">
+<p style="width:52px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:30px; font-weight:600; color:#ff3b4a">02</p>
+<p style="flex:1; font-size:26px; line-height:1.35; color:#e9ecee"><b>Adaptar el producto:</b> cumplir las normas del destino y ajustar calibre, envase y etiqueta a su idioma.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:16px; align-items:start">
+<p style="width:52px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:30px; font-weight:600; color:#ff3b4a">03</p>
+<p style="flex:1; font-size:26px; line-height:1.35; color:#e9ecee"><b>Aliarse:</b> trabajar con importadores, distribuidores o agentes que ya conocen el mercado.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:16px; align-items:start">
+<p style="width:52px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:30px; font-weight:600; color:#ff3b4a">04</p>
+<p style="flex:1; font-size:26px; line-height:1.35; color:#e9ecee"><b>Protegerse:</b> registrar la marca en el país de destino antes de exportar, para que nadie la copie.</p>
+</div>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:12px; padding:28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8a8f">Cosas a tomar en cuenta</p>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>Documentos:</b> factura, packing list, certificado de origen y sanitarios.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>Incoterm claro:</b> quién paga el flete y dónde pasa el riesgo.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>Pago seguro:</b> carta de crédito, cobranza, anticipo o transferencia.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>Tipo de cambio:</b> US$ 10.000 a $950 = $9.500.000; a $900 = $9.000.000.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>Normas del destino:</b> etiquetado, certificaciones y sanidad.</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:14px; align-items:start">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none; width:30px; height:30px; color:#ff3b4a"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#e9ecee"><b>TLC y apoyo:</b> aranceles más bajos y orientación de ProChile.</p>
+</div>
+</div>
+</div>
+<p style="font-size:28px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px">El éxito exportador combina <b>planificación, conocimiento del mercado y adaptabilidad</b>.</p>
+</section>
+<section class="slide" data-n="7" id="incoterms" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:20px">
+<video class="fondo" data-src="comercio-exterior/media/importar.mp4" poster="comercio-exterior/media/importar.jpg" muted loop playsinline preload="none" aria-label="Carga de mercancía en un avión" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:#0a0a0cd8"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Incoterms® 2020</p>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Siete Incoterms de uso frecuente.</h2>
+<div style="display:flex; flex-direction:row; gap:16px; align-items:end">
+<div style="flex:1; height:270px; display:flex; flex-direction:column; gap:8px; background:rgba(16,16,19,0.92); border:1px solid #3f4247; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ffffff">EXW</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">En fábrica</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">El comprador retira en la bodega del vendedor.</p>
+</div>
+<div style="flex:1; height:300px; display:flex; flex-direction:column; gap:8px; background:rgba(16,16,19,0.92); border:1px solid #3f4247; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ffffff">FCA</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Franco transportista</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">Se entrega al transportista del comprador.</p>
+</div>
+<div style="flex:1; height:330px; display:flex; flex-direction:column; gap:8px; background:rgba(70,10,16,0.94); border:2px solid #ff3b4a; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ff8a8f">FOB</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Franco a bordo</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">Se entrega a bordo del barco, en origen.</p>
+</div>
+<div style="flex:1; height:360px; display:flex; flex-direction:column; gap:8px; background:rgba(70,10,16,0.94); border:2px solid #ff3b4a; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ff8a8f">CFR</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Costo y flete</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">El vendedor paga el flete; el riesgo pasa a bordo.</p>
+</div>
+<div style="flex:1; height:390px; display:flex; flex-direction:column; gap:8px; background:rgba(70,10,16,0.94); border:2px solid #ff3b4a; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ff8a8f">CIF</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Costo, seguro y flete</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">Como CFR, más el seguro de la carga.</p>
+</div>
+<div style="flex:1; height:420px; display:flex; flex-direction:column; gap:8px; background:rgba(16,16,19,0.92); border:1px solid #3f4247; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ffffff">DAP</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Entregado en lugar</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">Se entrega en destino, sin descargar ni pagar la importación.</p>
+</div>
+<div style="flex:1; height:450px; display:flex; flex-direction:column; gap:8px; background:rgba(16,16,19,0.92); border:1px solid #3f4247; border-radius:10px; padding:20px 16px">
+<p style="font-size:44px; font-weight:800; color:#ffffff">DDP</p>
+<p style="font-size:24px; font-weight:700; line-height:1.25; color:#d7dade">Derechos pagados</p>
+<p style="font-size:24px; line-height:1.3; color:#9aa0a6">El vendedor entrega con los impuestos de importación pagados.</p>
+</div>
+</div>
+<div style="display:flex; flex-direction:row; justify-content:space-between">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">← Menos obligación del vendedor</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#ff8a8f">En rojo: solo transporte marítimo</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">Más obligación del vendedor →</p>
+</div>
+<p style="font-size:28px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px"><b>En simple:</b> es como pedir una pizza. Con EXW la vas a buscar tú al local; con DDP te la dejan en la mesa, todo pagado. Los demás quedan entremedio. Ojo: los Incoterms no dicen cómo se paga ni cuándo cambia el dueño; eso va en el contrato.</p>
+</section>
+<section class="slide" data-n="8" id="importacion" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:104px 128px 152px; display:flex; flex-direction:column; gap:24px">
+<video class="fondo" data-src="comercio-exterior/media/importacion.mp4" poster="comercio-exterior/media/importacion.jpg" muted loop playsinline preload="none" aria-label="Barco pesquero calando una red de cerco, visto desde un dron" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:#0a0a0cdc"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Caso de importación en la pesca</p>
+<h2 style="font-size:60px; font-weight:700; line-height:1.1; color:#ffffff">Ejemplo: una pesquera importa dos cargas.</h2>
+<div style="display:flex; flex-direction:row; gap:16px">
+<p style="flex:1; font-size:26px; line-height:1.3; color:#ffffff; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ffb020; border-radius:8px; padding:14px 20px"><b>Camarón congelado</b> · Ecuador → San Antonio, en barco refrigerado</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#ffffff; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #3ddc84; border-radius:8px; padding:14px 20px"><b>Harina de soya</b> para alimento de peces · Argentina → Talcahuano, en camión</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:8px">
+<div style="display:flex; flex-direction:row; gap:20px; padding:0 24px">
+<p style="width:340px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">DOCUMENTO</p>
+<p style="flex:1; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">QUÉ ACREDITA</p>
+<p style="width:220px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">CARGA</p>
+<p style="width:250px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">REVISA EN CHILE</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ffb020; border-radius:8px; padding:12px 24px">
+<p style="width:340px; font-size:28px; font-weight:700; color:#ffffff">Zoosanitario</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Que el animal estaba sano, como el carnet de vacunas de una mascota.</p>
+<p style="width:220px; font-size:26px; color:#ffb020">Camarón</p>
+<p style="width:250px; font-size:26px; color:#d7dade">SERNAPESCA</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ffb020; border-radius:8px; padding:12px 24px">
+<p style="width:340px; font-size:28px; font-weight:700; color:#ffffff">Libre venta</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Que en su país se vende normalmente: no es un producto prohibido.</p>
+<p style="width:220px; font-size:26px; color:#ffb020">Camarón</p>
+<p style="width:250px; font-size:26px; color:#d7dade">SEREMI de Salud</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ffb020; border-radius:8px; padding:12px 24px">
+<p style="width:340px; font-size:28px; font-weight:700; color:#ffffff">Destinación aduanera (CDA)</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Permiso para llevar la comida del puerto a una bodega mientras la revisan.</p>
+<p style="width:220px; font-size:26px; color:#ffb020">Camarón</p>
+<p style="width:250px; font-size:26px; color:#d7dade">SEREMI de Salud</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #3ddc84; border-radius:8px; padding:12px 24px">
+<p style="width:340px; font-size:28px; font-weight:700; color:#ffffff">Fitosanitario</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Que el grano no trae plagas que dañen los cultivos chilenos.</p>
+<p style="width:220px; font-size:26px; color:#3ddc84">Soya</p>
+<p style="width:250px; font-size:26px; color:#d7dade">SAG</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #3ddc84; border-radius:8px; padding:12px 24px">
+<p style="width:340px; font-size:28px; font-weight:700; color:#ffffff">Fumigación</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Que la carga y los pallets de madera se fumigaron, como una casa contra termitas.</p>
+<p style="width:220px; font-size:26px; color:#3ddc84">Soya y pallets</p>
+<p style="width:250px; font-size:26px; color:#d7dade">SAG</p>
+</div>
+</div>
+</section>
+<section class="slide" data-n="9" id="incoterms-casos" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:112px 128px 160px; display:flex; flex-direction:column; gap:16px">
+<video class="fondo" data-src="comercio-exterior/media/documentos-pesca.mp4" poster="comercio-exterior/media/documentos-pesca.jpg" muted loop playsinline preload="none" aria-label="Pescado recién descargado en cajas, visto desde arriba" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:#0a0a0cdc"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Incoterms en cada caso</p>
+<h2 style="font-size:68px; font-weight:700; line-height:1.1; color:#ffffff">Qué Incoterm usaríamos y por qué.</h2>
+<div style="display:flex; flex-direction:column; gap:14px">
+<div style="display:flex; flex-direction:row; gap:20px; padding:0 28px">
+<p style="width:380px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">CASO</p>
+<p style="width:340px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">INCOTERM</p>
+<p style="width:360px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">PAGA EL FLETE</p>
+<p style="flex:1; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9aa0a6">EL RIESGO PASA AL COMPRADOR</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ff3b4a; border-radius:12px; padding:16px 28px">
+<div style="width:380px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:28px; font-weight:700; color:#ffffff">Cerezas Chile → China</p>
+<p style="font-size:24px; color:#9aa0a6">Exportación · barco refrigerado</p>
+</div>
+<div style="width:340px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:34px; font-weight:800; color:#ff8a8f">FOB San Antonio</p>
+<p style="font-size:24px; color:#9aa0a6">«Lo dejo en el barco y listo»</p>
+</div>
+<p style="width:360px; font-size:26px; line-height:1.3; color:#d7dade">El importador chino</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Al quedar a bordo en San Antonio</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #ffb020; border-radius:12px; padding:16px 28px">
+<div style="width:380px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:28px; font-weight:700; color:#ffffff">Camarón Ecuador → Chile</p>
+<p style="font-size:24px; color:#9aa0a6">Importación · barco refrigerado</p>
+</div>
+<div style="width:340px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:34px; font-weight:800; color:#ff8a8f">CIF San Antonio</p>
+<p style="font-size:24px; color:#9aa0a6">«Te lo mando pagado y asegurado»</p>
+</div>
+<p style="width:360px; font-size:26px; line-height:1.3; color:#d7dade">El exportador ecuatoriano, que también paga el seguro</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Al quedar a bordo en Guayaquil</p>
+</div>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:center; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-left:6px solid #3ddc84; border-radius:12px; padding:16px 28px">
+<div style="width:380px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:28px; font-weight:700; color:#ffffff">Soya Argentina → Chile</p>
+<p style="font-size:24px; color:#9aa0a6">Importación · camión</p>
+</div>
+<div style="width:340px; display:flex; flex-direction:column; gap:4px">
+<p style="font-size:34px; font-weight:800; color:#ffffff">DAP Talcahuano</p>
+<p style="font-size:24px; color:#9aa0a6">«Te lo llevo hasta la puerta»</p>
+</div>
+<p style="width:360px; font-size:26px; line-height:1.3; color:#d7dade">El exportador argentino</p>
+<p style="flex:1; font-size:26px; line-height:1.3; color:#d7dade">Al llegar a Talcahuano, antes de descargar</p>
+</div>
+</div>
+<p style="font-size:28px; line-height:1.35; color:#e9ecee; border-left:4px solid #ff3b4a; padding:4px 0 4px 24px">FOB y CIF son solo para barco: por eso la soya, que llega en camión, usa DAP.</p>
+<p style="font-size:24px; line-height:1.35; color:#d7dade; background:rgba(16,16,19,0.92); border:1px solid #2a2c30; border-radius:8px; padding:14px 20px"><b>Ejemplo con números:</b> camarón US$ 50.000 + flete US$ 3.000 + seguro US$ 500 = <b>valor CIF US$ 53.500</b>. Arancel general 6 % = US$ 3.210 (0 % si hay acuerdo comercial). IVA 19 % sobre US$ 56.710 = <b>US$ 10.775</b>.</p>
+</section>
+<section class="slide" data-n="10" id="conclusion" data-transition="fade" style="background:#0a0a0c; color:#ffffff; font-family:'Inter', Arial, sans-serif; padding:128px 128px 176px; display:flex; flex-direction:column; justify-content:end; gap:28px">
+<video class="fondo" data-src="comercio-exterior/media/cierre.mp4" poster="comercio-exterior/media/cierre.jpg" muted loop playsinline preload="none" aria-label="La Tierra vista desde el espacio" style="position:absolute; top:0; left:0; width:1920px; height:1080px; object-fit:cover"></video>
+<div style="position:absolute; top:0; left:0; width:1920px; height:1080px; background:linear-gradient(90deg, #0a0a0cf4 0%, #0a0a0cd8 50%, #0a0a0c80 100%)"></div>
+<div style="position:absolute; top:96px; left:1172px; width:620px; height:150px; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:40px; background:#f4f5f2; border-radius:16px; padding:16px 32px">
+<img src="comercio-exterior/media/logo-insuco.png" alt="Logo INSUCO" style="width:104px; height:118px; object-fit:contain">
+<img src="comercio-exterior/media/logo-comeduc.png" alt="Logo Comeduc" style="width:260px; height:120px; object-fit:contain">
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:#ff3b4a">Conclusión</p>
+<h2 style="width:1200px; font-size:72px; font-weight:800; line-height:1.05; color:#ffffff">Exportar es planificar, conocer el mercado y adaptarse.</h2>
+<div style="display:flex; flex-direction:row; gap:20px; align-items:stretch">
+<div style="flex:1; display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-top:4px solid #ff3b4a; border-radius:12px; padding:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:28px; font-weight:600; color:#ff3b4a">01</p>
+<p style="font-size:26px; line-height:1.35; color:#e9ecee">Exportar hace crecer: más mercados, más vida al producto, menores costos y prestigio internacional.</p>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-top:4px solid #ff3b4a; border-radius:12px; padding:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:28px; font-weight:600; color:#ff3b4a">02</p>
+<p style="font-size:26px; line-height:1.35; color:#e9ecee">Las barreras, la cultura, la competencia y la logística se enfrentan con estrategia y preparación.</p>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-top:4px solid #ff3b4a; border-radius:12px; padding:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:28px; font-weight:600; color:#ff3b4a">03</p>
+<p style="font-size:26px; line-height:1.35; color:#e9ecee">Cada carga necesita sus certificados según su origen: zoosanitario si es animal, fitosanitario si es vegetal.</p>
+</div>
+<div style="flex:1; display:flex; flex-direction:column; gap:10px; background:rgba(16,16,19,0.9); border:1px solid #2a2c30; border-top:4px solid #ff3b4a; border-radius:12px; padding:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:28px; font-weight:600; color:#ff3b4a">04</p>
+<p style="font-size:26px; line-height:1.35; color:#e9ecee">El Incoterm correcto deja claro quién paga el flete, quién asume el riesgo y dónde se entrega.</p>
+</div>
+</div>
+<p style="font-size:56px; font-weight:800; color:#ffffff">¿Preguntas? <span style="color:#ff8a8f">Muchas gracias.</span></p>
+<p style="position:absolute; bottom:64px; left:128px; width:1664px; font-size:26px; color:#9aa0a6">INSUCO Bicentenario de Excelencia, Chillán · 2026</p>
+</section>
+</div>
+</div>
+<aside id="notas" aria-label="Notas del orador"><h3>Notas del orador</h3><div></div></aside>
+<div id="ayuda">← → para avanzar · N notas · F pantalla completa</div>
+<nav id="barra" aria-label="Controles">
+  <button id="ant" type="button" aria-label="Diapositiva anterior">←</button>
+  <span id="contador" aria-live="polite">1 / 1</span>
+  <button id="sig" type="button" aria-label="Diapositiva siguiente">→</button>
+  <span class="sep"></span>
+  <button id="btnNotas" type="button" aria-pressed="false">Notas</button>
+  <button id="btnFull" type="button">Pantalla completa</button>
+</nav>
+<script>
+(function () {
+  var NOTAS = ["[INTEGRANTE 1] — 40 segundos.\nBuenos días. Somos [nombres], del INSUCO Bicentenario de Excelencia de Chillán, y nuestro tema son las exportaciones.\nVamos a ver qué es exportar, sus ventajas y desafíos, las estrategias para hacerlo bien y los Incoterms más usados. Además, revisaremos un caso de importación en la pesca, con los documentos que se exigen.\nTodo lo explicaremos con ejemplos chilenos.\nGLOSARIO PARA EL EQUIPO (por si preguntan): exportar es vender al extranjero; importar es comprar al extranjero. Arancel es el impuesto que se paga por importar. Divisas son monedas extranjeras, como el dólar. Un Incoterm es una regla internacional que dice hasta dónde se hace cargo el vendedor y desde dónde el comprador. Flete es lo que cuesta el transporte.", "[INTEGRANTE 1] — 1 minuto 30.\nAntes de entrar en materia, veamos cómo ha mejorado Chile gracias a abrirse al mundo. Un tratado de libre comercio, o TLC, es un acuerdo entre países para cobrarse menos aranceles, es decir, menos «peaje», y comerciar con reglas claras.\nDesde 1990, con el retorno a la democracia, los gobiernos mantuvieron la economía abierta y siguieron una estrategia llamada «regionalismo abierto»: bajar el arancel para todos y, al mismo tiempo, firmar acuerdos con países y bloques.\nMiremos las cifras. Las exportaciones pasaron de 8 mil 373 millones de dólares en 1990 a un récord de 100 mil 163 millones en 2024: se multiplicaron unas 12 veces. El PIB por persona, que es la producción del país dividida por sus habitantes, pasó de 2 mil 510 dólares en 1990 a casi 17 mil en 2023. El arancel general bajó de 15 % a 6 %. Y hoy Chile tiene 26 acuerdos comerciales vigentes.\nLos hitos: Mercosur y Canadá en 1996 y 1997, la Unión Europea en 2003, Estados Unidos y Corea del Sur en 2004, China en 2006, y el CPTPP, con países del Asia-Pacífico, en 2023. El de China fue el primer tratado de libre comercio que China firmó con un país, y gracias a él las cerezas chilenas entran allá con arancel 0 % desde 2008. Por eso la superficie plantada con cerezos se multiplicó por 21 entre 2000 y 2023.\nCon este contexto, partamos por lo básico.\nCÁLCULOS: 100.163 ÷ 8.373 = 11,96, unas 12 veces. 16.990 ÷ 2.510 = 6,77, unas 6,8 veces (en dólares de cada año, sin descontar la inflación). 67.570 ÷ 3.241 = 20,8, unas 21 veces.\nPARA SABER MÁS (si preguntan): ya desde los años 70 Chile había bajado sus aranceles de forma pareja para todos los países; desde 1990 se agregaron los tratados. Los 26 acuerdos son de distintos tipos: tratados de libre comercio, acuerdos de asociación, de complementación económica y de alcance parcial. El crecimiento no se explica solo por los tratados: también influyen el precio del cobre, la inversión y otros factores.\nFuentes: Banco Central de Chile (exportaciones); Banco Mundial (PIB per cápita); SUBREI (acuerdos vigentes); Servicio Nacional de Aduanas (arancel general); Xinhua (cerezas y hectáreas plantadas).", "[INTEGRANTE 1] — 1 minuto 30.\nPartamos por lo básico: ¿qué es exportar? Es vender bienes o servicios que se producen en nuestro país a compradores de otros países. Dicho en simple: es como vender las empanadas que haces en casa, pero a un cliente que vive en otro país y que te paga en dólares.\nEso trae tres cosas. La venta en sí: la empresa encuentra clientes fuera de Chile. Divisas: el pago llega en dólares u otras monedas extranjeras, que entran al país. Y se fortalece la economía nacional, porque las empresas crecen, producen más y contratan más personas.\nHay dos formas de exportar. Directa, cuando la empresa le vende sola al cliente extranjero. E indirecta, cuando vende a través de un intermediario, como una exportadora o un agente, que se encarga de los trámites. En Chile, la salida de la mercancía se declara a Aduanas con un documento llamado DUS, y lo que se exporta no paga IVA.\nPara que no quede en teoría, vamos a explicar todo con un caso real: las cerezas. Chile es el mayor exportador de cerezas frescas del mundo. En la temporada 2024-2025 exportó 626 mil toneladas, un 51 % más que la temporada anterior, que fueron unas 414 mil. Y de todo eso, el 91 %, unas 568 mil toneladas, se fue a China. Para imaginarlo: son más de 125 millones de cajas de 5 kilos. Imaginemos una exportadora de Ñuble que vende su fruta en China: con ella veremos cada ventaja y cada desafío.\nPARA SABER MÁS (si preguntan): DUS significa Documento Único de Salida; normalmente lo tramita un agente de aduana. Además de no pagar IVA por lo que vende afuera, el exportador puede pedir la devolución del IVA que pagó en las compras para producir lo exportado.\nCÁLCULOS: 626.014 ÷ 413.979 = 1,51, es decir, 51 % más. 568.504 ÷ 626.014 = 0,91, es decir, 91 % a China. 626.014 toneladas = 626.014.000 kilos; ÷ 5 kilos por caja = unos 125 millones de cajas.\nFuentes: material del curso, Semana 24 sept.; ODEPA, Ministerio de Agricultura de Chile; PortalPortuario (2025), temporada de cerezas 2024-2025; Servicio Nacional de Aduanas; SII.", "[INTEGRANTE 1] — 1 minuto 40.\n¿Por qué una empresa querría exportar? El material del curso nombra cuatro ventajas estratégicas, y todas se ven en las cerezas.\nDiversificación de mercados: no depender de un solo país comprador; es no poner todos los huevos en la misma canasta. En el caso se ve claro: el 91 % de las cerezas chilenas va a China. En la temporada 2024-2025 llegó tanta fruta que el precio allá bajó, y las exportadoras recibieron menos por cada caja. Por eso conviene vender también a otros países: si un mercado compra menos o paga menos, otro compensa.\nAmpliación del ciclo de vida del producto: algo que aquí ya es común puede ser novedad afuera. Las cerezas chilenas se cosechan entre noviembre y febrero, cuando en el hemisferio norte no hay. Se venden en contraestación.\nEconomías de escala: mientras más se produce, más barata sale cada unidad. Es como el horno de la casa: prenderlo para un queque o para diez gasta casi lo mismo, así que con diez cada queque sale más barato. En números: una cámara de frío de 10 millones de pesos, repartida entre mil cajas, carga 10 mil pesos a cada caja. Si se reparte entre diez mil cajas, carga solo mil pesos por caja. Mismo gasto, diez veces menos por caja.\nY prestigio internacional: si la fruta cumple las exigencias de un mercado tan estricto como China, eso sirve de carta de presentación ante otros clientes.\nUn dato más: en Chile las exportaciones no pagan IVA, y el exportador puede recuperar el IVA que pagó en las compras que usó para producir. Así, el producto chileno no sale encarecido por impuestos.\n[INTEGRANTE 2] sigue con los desafíos.\nPARA SABER MÁS (si preguntan): los costos fijos son los que no cambian aunque se produzca más, como el arriendo o una máquina; los costos variables sí cambian, como la fruta o las cajas. La economía de escala aparece cuando los costos fijos se reparten entre más unidades.\nFuentes: material del curso, Semana 24 sept., «Ventajas estratégicas»; PortalPortuario (2025); Cooperativa.cl (enero 2025, caída del precio de la cereza en China); SII (devolución del IVA exportador). El cálculo de la cámara de frío es un ejemplo con números redondos.", "[INTEGRANTE 2] — 1 minuto 50.\nGracias, [INTEGRANTE 1]. Exportar no es todo ventajas: el material nombra cuatro desafíos comunes.\nBarreras arancelarias y no arancelarias. El arancel es el impuesto que cobra el país de destino por dejar entrar un producto; las barreras no arancelarias son requisitos, como normas sanitarias, permisos, cuotas o etiquetado. En simple: el arancel es como el peaje de una carretera, y los requisitos son el control donde revisan que traigas todo en regla. En el caso, el tratado de libre comercio entre Chile y China rebajó los aranceles, pero la fruta igual debe viajar con un certificado fitosanitario del SAG que pruebe que va sin plagas. Un tratado baja los impuestos, pero las normas se cumplen igual.\nDiferencias culturales y lingüísticas: otro idioma, otros gustos, otras costumbres y otra forma de negociar. En China las cerezas se regalan en el Año Nuevo Chino, y el rojo es el color de la buena suerte; sin conocer eso, no se entiende el mercado.\nCompetencia internacional: Chile no es el único que vende cerezas, así que hay que ganar en calidad, precio y cumplimiento de plazos.\nY logística compleja: la cereza es delicada y viaja semanas en un contenedor refrigerado; cualquier atraso significa pérdidas.\nPARA SABER MÁS (si preguntan): una cuota es un límite a la cantidad que se puede importar; una licencia es un permiso previo para importar. Otro riesgo que no aparece en el material es el tipo de cambio: si se vende en dólares y el dólar baja, la empresa recibe menos pesos.\nFuentes: material del curso, Semana 24 sept.; SUBREI (TLC Chile–China); SAG.", "[INTEGRANTE 2] — 1 minuto 50.\nPara enfrentar esos desafíos, el material propone cuatro estrategias. Investigar el mercado: saber quién compra, a qué precio, qué competencia hay y en qué fechas se vende más, como el Año Nuevo Chino. Adaptar el producto a las normas y gustos del destino: calibre de la fruta, envase y una etiqueta en su idioma. Aliarse con importadores, distribuidores o agentes que ya conocen ese mercado. Y protegerse: registrar la marca en el país de destino antes de exportar, para que nadie la copie.\nA eso sumamos seis cosas a tomar en cuenta. Tener los documentos en regla: factura comercial, lista de empaque, certificado de origen y certificados sanitarios. Dejar claro el Incoterm en el contrato, que veremos ahora. Asegurar el pago. Una opción es la carta de crédito: el banco del comprador actúa como un árbitro que guarda la plata y se la paga al vendedor solo cuando este demuestra con documentos que envió la mercancía. Otra es el pago anticipado, y también existe la transferencia bancaria o el pago a plazo, por ejemplo a 30 o 60 días, si hay confianza entre las partes. Considerar el tipo de cambio: se cobra en dólares, y si el dólar baja, llegan menos pesos. Por ejemplo, una venta de 10 mil dólares con el dólar a 950 pesos son 9 millones 500 mil pesos; si el dólar baja a 900, son 9 millones. Se pierden 500 mil pesos sin haber vendido menos. Cumplir las normas del país de destino. Y revisar si hay un tratado de libre comercio vigente y pedir orientación a ProChile, la institución del Estado que apoya a los exportadores.\nEn resumen: planificación, conocimiento del mercado y adaptabilidad. [INTEGRANTE 3] explica los Incoterms.\nPARA SABER MÁS (si preguntan): de más seguro a menos seguro para el vendedor, las formas de pago son: pago anticipado, carta de crédito, cobranza documentaria (el banco entrega los documentos de la carga solo cuando el comprador paga) y transferencia después de recibir, también llamada cuenta abierta. Ojo: el instrumento se llama carta de crédito; una nota de crédito es otra cosa, un documento que rebaja una factura.\nFuentes: material del curso, Semanas 3 y 24 sept.; ProChile.", "[INTEGRANTE 3] — 1 minuto 40.\nGracias, [INTEGRANTE 2].\nLos Incoterms son reglas de la Cámara de Comercio Internacional que fijan quién paga el transporte, quién asume el riesgo y dónde se entrega la mercancía. La versión vigente es la de 2020 y tiene 11. Aquí están siete de los más usados, de menor a mayor obligación para el vendedor.\nEn simple, es como pedir una pizza: con EXW la vas a buscar tú al local y te haces cargo de todo; con DDP te la dejan en la mesa, con todo pagado. Los demás Incoterms son puntos intermedios del camino: dicen hasta dónde llega el vendedor y desde dónde se hace cargo el comprador.\nCon EXW, el comprador retira en la bodega del vendedor. Con FCA, se entrega al transportista del comprador. Los tres en rojo son solo para barco: FOB, se entrega a bordo; CFR, el vendedor paga además el flete; y CIF, paga flete y seguro. Atención: en CFR y CIF el vendedor paga hasta el destino, pero el riesgo pasa al comprador cuando la carga sube al barco.\nCon DAP se entrega en destino sin hacer la importación, y con DDP, con los impuestos de importación pagados.\nUn detalle importante: los Incoterms no dicen cómo se paga ni en qué momento cambia el dueño de la mercancía; eso se acuerda en el contrato.\nAhora veamos el otro lado: la importación.\nPARA SABER MÁS (si preguntan): los 11 Incoterms se agrupan por su primera letra. E, como EXW: el comprador retira en origen. F, como FCA, FAS y FOB: el vendedor entrega, pero no paga el transporte principal. C, como CPT, CIP, CFR y CIF: el vendedor paga el transporte principal, pero el riesgo pasa en origen. D, como DAP, DPU y DDP: el vendedor entrega en el destino. Los que no aparecen en la diapositiva son FAS (al costado del barco), CPT y CIP (transporte pagado, con o sin seguro, para cualquier medio) y DPU (entregado y descargado en destino). Siempre se escriben con el lugar y la versión, por ejemplo «FOB San Antonio Incoterms® 2020».\nFuente: Cámara de Comercio Internacional (ICC), Incoterms® 2020.", "[INTEGRANTE 3] — 2 minutos.\nAhora el otro lado del comercio: importar. Imaginemos una empresa pesquera y acuícola del Biobío que importa dos cargas. La primera, de origen animal: camarón congelado desde Ecuador, en barco refrigerado hasta San Antonio. La segunda, de origen vegetal, un producto agrícola: harina de soya desde Argentina, en camión hasta Talcahuano, para fabricar alimento para sus peces. Las separamos porque cada una necesita documentos distintos.\nPara el camarón, tres documentos. El certificado zoosanitario, que emite la autoridad sanitaria de Ecuador y acredita que el producto animal está sano; es como el carnet de vacunas de una mascota. En Chile lo revisa SERNAPESCA. El certificado de libre venta, que prueba que el camarón se vende legalmente y es apto para el consumo en su país. Y la destinación aduanera: la SEREMI de Salud entrega el Certificado de Destinación Aduanera, o CDA, que permite llevar el alimento desde el puerto a una bodega autorizada; ahí lo inspeccionan y, si todo está bien, dan la autorización de uso y disposición. Recién entonces se puede vender.\nPara la soya, dos documentos. El fitosanitario, que emite el servicio sanitario de Argentina y acredita que va libre de plagas; lo revisa el SAG en la frontera. Y el certificado de fumigación, que prueba que la carga y sus pallets de madera fueron tratados contra plagas, según la norma internacional NIMF 15; es como fumigar una casa para que no traiga termitas a la de al lado.\n[INTEGRANTE 4] explica qué Incoterm conviene en cada caso.\nPARA SABER MÁS (si preguntan): en una importación normalmente se contrata un agente de aduana, que presenta la Declaración de Ingreso (DIN) con todos estos documentos y paga los impuestos. Si falta un certificado o la revisión encuentra un problema, la carga queda retenida y puede tener que devolverse al origen o destruirse. Por eso los papeles se revisan antes de embarcar.\nCaso de ejemplo construido para la presentación. Fuentes: Ministerio de Salud de Chile (importación de alimentos); SERNAPESCA; SAG; NIMF 15 (FAO).", "[INTEGRANTE 4] — 1 minuto 40.\nGracias, [INTEGRANTE 3]. ¿Qué Incoterm usaríamos en cada caso?\nPara exportar las cerezas a China, lo más común es FOB San Antonio: la exportadora entrega la fruta a bordo en Chile, y desde ahí el importador chino paga el flete y asume el riesgo.\nPara importar el camarón, a la pesquera le conviene comprar CIF San Antonio: el exportador ecuatoriano paga el flete y el seguro hasta Chile. Pero atención: el riesgo pasa a la pesquera cuando la carga sube al barco en Guayaquil, y por eso es clave que venga asegurada. Además, en Chile los derechos de importación se calculan sobre el valor CIF.\nPara la soya no sirven FOB ni CIF, porque son solo para transporte marítimo y la soya llega en camión. Usamos DAP Talcahuano: el exportador argentino trae la carga hasta la planta, y la pesquera hace los trámites de importación.\nVeamos un ejemplo con números redondos: si el camarón vale 50 mil dólares, el flete 3 mil y el seguro 500, el valor CIF es 53 mil 500 dólares. Sobre ese valor se calculan los impuestos en Chile. Con el arancel general de 6 %, se pagan 3 mil 210 dólares. Después, el IVA de 19 % se calcula sobre el valor CIF más el arancel, es decir, sobre 56 mil 710 dólares, y da 10 mil 775 dólares. Si hay un acuerdo comercial con Ecuador y se presenta el certificado de origen, el arancel puede ser 0 %, y solo se paga el IVA: 10 mil 165 dólares.\nUn dato técnico: para carga en contenedor, la Cámara de Comercio Internacional recomienda FCA o CIP, aunque en la práctica FOB y CIF se siguen usando mucho.\nPARA SABER MÁS (si preguntan): en Chile, el arancel general es de 6 % sobre el valor CIF, y puede bajar a 0 % si hay un acuerdo comercial con el país de origen y se presenta el certificado de origen. Además se paga el IVA de 19 %. Por eso conviene revisar los acuerdos antes de comprar.\nCÁLCULOS: 50.000 + 3.000 + 500 = 53.500 (CIF). 53.500 × 6 % = 3.210 (arancel). 53.500 + 3.210 = 56.710; × 19 % = 10.774,90, redondeado 10.775 (IVA). Sin arancel: 53.500 × 19 % = 10.165.\nFuente: Cámara de Comercio Internacional (ICC), Incoterms® 2020; Servicio Nacional de Aduanas (arancel e IVA de importación). Elección sugerida y montos de ejemplo para los casos.", "[INTEGRANTE 4] — 1 minuto 30.\nPara concluir, cuatro ideas.\nPrimero: exportar hace crecer a una empresa. Le da más mercados, alarga la vida de sus productos, baja sus costos y le da prestigio; las cerezas chilenas son un ejemplo de eso.\nSegundo: los desafíos existen, barreras, cultura, competencia y logística, pero se enfrentan con estrategia y preparación.\nTercero: en comercio exterior los papeles importan. Cada carga necesita sus certificados según su origen: zoosanitario y libre venta para un producto animal como el camarón, fitosanitario y fumigación para un producto vegetal como la soya, y la destinación aduanera para los alimentos.\nY cuarto: el Incoterm correcto deja claro desde el principio quién paga y quién asume el riesgo.\nEn resumen, exportar es planificar, conocer el mercado y adaptarse. Muchas gracias. ¿Tienen alguna pregunta?"];
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var escenario = document.getElementById('escenario');
+  var contador = document.getElementById('contador');
+  var progreso = document.getElementById('progreso');
+  var panel = document.getElementById('notas');
+  var actual = -1;
+
+  function escalar() {
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    escenario.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+  }
+
+  function cargar(i) {
+    var sl = slides[i];
+    if (!sl) return;
+    sl.querySelectorAll('video[data-src]').forEach(function (v) {
+      v.src = v.getAttribute('data-src');
+      v.removeAttribute('data-src');
+      v.preload = 'auto';
+    });
+  }
+
+  function ir(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if (i === actual) return;
+    if (actual >= 0) {
+      slides[actual].classList.remove('activa');
+      slides[actual].setAttribute('aria-hidden', 'true');
+      slides[actual].querySelectorAll('video').forEach(function (v) { v.pause(); });
+    }
+    actual = i;
+    var sl = slides[i];
+    cargar(i);
+    sl.classList.add('activa');
+    sl.removeAttribute('aria-hidden');
+    sl.querySelectorAll('video').forEach(function (v) {
+      try { v.currentTime = 0; } catch (e) {}
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    });
+    cargar(i + 1);
+    contador.textContent = (i + 1) + ' / ' + slides.length;
+    progreso.style.width = ((i + 1) / slides.length * 100) + '%';
+    panel.querySelector('div').textContent = NOTAS[i] || '';
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function alternarNotas() {
+    var abierta = panel.classList.toggle('abierta');
+    document.getElementById('btnNotas').setAttribute('aria-pressed', abierta ? 'true' : 'false');
+  }
+
+  function pantallaCompleta() {
+    var d = document.documentElement;
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else if (d.requestFullscreen) { d.requestFullscreen().catch(function () {}); }
+  }
+
+  slides.forEach(function (s) { s.setAttribute('aria-hidden', 'true'); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); ir(actual + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); ir(actual - 1); }
+    else if (k === 'Home') { ir(0); }
+    else if (k === 'End') { ir(slides.length - 1); }
+    else if (k === 'n' || k === 'N') { alternarNotas(); }
+    else if (k === 'f' || k === 'F') { pantallaCompleta(); }
+  });
+
+  document.getElementById('visor').addEventListener('click', function (e) {
+    if (window.getSelection && String(window.getSelection())) return;
+    ir(e.clientX < window.innerWidth / 3 ? actual - 1 : actual + 1);
+  });
+  document.getElementById('ant').addEventListener('click', function () { ir(actual - 1); });
+  document.getElementById('sig').addEventListener('click', function () { ir(actual + 1); });
+  document.getElementById('btnNotas').addEventListener('click', alternarNotas);
+  document.getElementById('btnFull').addEventListener('click', pantallaCompleta);
+
+  var x0 = null, y0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) ir(actual + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+
+  var t;
+  function mostrarBarra() {
+    document.body.classList.add('mostrar');
+    clearTimeout(t);
+    t = setTimeout(function () { document.body.classList.remove('mostrar'); }, 2500);
+  }
+  document.addEventListener('mousemove', mostrarBarra);
+  document.addEventListener('touchstart', mostrarBarra, { passive: true });
+
+  setTimeout(function () { document.getElementById('ayuda').classList.add('oculta'); }, 4000);
+
+  window.addEventListener('resize', escalar);
+  window.addEventListener('hashchange', function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n) ir(n - 1);
+  });
+
+  escalar();
+  var inicial = parseInt(location.hash.slice(1), 10);
+  ir(inicial ? inicial - 1 : 0);
+})();
+</script>
 </body>
 </html>
