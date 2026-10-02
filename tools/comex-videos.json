@@ -1,13 +1,9 @@
 {
-  "portada":    { "fondo": "container port aerial" },
-  "caso":       { "fondo": "cargo ship ocean aerial", "foto": "cherries" },
-  "contrato":   { "fondo": "business meeting office", "foto": "business handshake" },
-  "cotizacion": { "fondo": "signing documents" },
-  "incoterms":  { "fondo": "container ship sea" },
-  "fobcif":     { "fondo": "container crane port" },
-  "importar":   { "fondo": "cargo airplane", "foto": "shipping containers" },
-  "documentos": { "fondo": "warehouse logistics", "foto": "forklift warehouse" },
-  "exportar":   { "fondo": "trucks highway aerial" },
-  "organismos": { "fondo": "city skyline night" },
-  "cierre":     { "fondo": "earth from space" }
+  "quees":       { "foto": "dollar bills" },
+  "cerezas":     { "fondo": "cherry orchard" },
+  "escala":      { "fondo": "fruit packing factory", "foto": "quality control inspection" },
+  "desafios":    { "fondo": "ship storm" },
+  "barreras":    { "fondo": "customs inspection" },
+  "cultura":     { "fondo": "chinese new year", "foto": "refrigerated container" },
+  "estrategias": { "fondo": "business meeting", "foto": "business handshake" }
 }
